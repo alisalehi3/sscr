@@ -1,0 +1,17 @@
+{
+  "name": "mind-mirror",
+  "version": "1.0.0",
+  "description": "سیستم تحلیل شناختی و عاطفی با استفاده از EEG و گفتار",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "buffer": "^6.0.3",
+    "langchain": "^0.3.22",
+    "whisper-node": "^1.1.1"
+  },
+  "type": "module"
+}

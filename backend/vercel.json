@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app/main.py"
+    }
+  ],
+  "env": {
+    "APP_ENV": "production",
+    "DATABASE_URL": "@database_url",
+    "SECRET_KEY": "@secret_key",
+    "REDIS_HOST": "@redis_host",
+    "REDIS_PORT": "@redis_port",
+    "REDIS_PASSWORD": "@redis_password",
+    "INFLUXDB_URL": "@influxdb_url",
+    "INFLUXDB_TOKEN": "@influxdb_token",
+    "KAFKA_BOOTSTRAP_SERVERS": "@kafka_bootstrap_servers"
+  }
+} 

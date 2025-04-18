@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMEE - موتور تجربه چندحسی مصنوعی</title>
+    <style>
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background-color: #F5FCFF;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+        .subtitle {
+            font-size: 16px;
+            color: #388E3C;
+        }
+        .status-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #E8F5E9;
+            border-radius: 10px;
+        }
+        .status-label {
+            font-weight: bold;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        .sensor-container {
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1B5E20;
+        }
+        .sensor-item {
+            display: flex;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .sensor-label {
+            flex: 1;
+            font-weight: bold;
+        }
+        .sensor-value {
+            flex: 2;
+        }
+        .button {
+            background-color: #2E7D32;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #1B5E20;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">SMEE</div>
+            <div class="subtitle">موتور تجربه چندحسی مصنوعی</div>
+        </div>
+
+        <div class="status-container">
+            <div class="status-label">وضعیت:</div>
+            <div id="status">آماده</div>
+        </div>
+
+        <div class="sensor-container">
+            <div class="section-title">داده‌های حسی:</div>
+            
+            <div class="sensor-item">
+                <div class="sensor-label">بینایی:</div>
+                <div id="visual-data" class="sensor-value">در انتظار...</div>
+            </div>
+            
+            <div class="sensor-item">
+                <div class="sensor-label">شنوایی:</div>
+                <div id="audio-data" class="sensor-value">در انتظار...</div>
+            </div>
+            
+            <div class="sensor-item">
+                <div class="sensor-label">لمسی:</div>
+                <div id="tactile-data" class="sensor-value">در انتظار...</div>
+            </div>
+            
+            <div class="sensor-item">
+                <div class="sensor-label">داده‌های بیوسنسور:</div>
+                <div id="biosensor-data" class="sensor-value">در انتظار...</div>
+            </div>
+        </div>
+
+        <button id="send-button" class="button">ارسال داده‌های حسی</button>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8000';
+        const statusElement = document.getElementById('status');
+        const visualDataElement = document.getElementById('visual-data');
+        const audioDataElement = document.getElementById('audio-data');
+        const tactileDataElement = document.getElementById('tactile-data');
+        const biosensorDataElement = document.getElementById('biosensor-data');
+        const sendButton = document.getElementById('send-button');
+
+        // بررسی اتصال به سرور
+        async function checkServer() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                statusElement.textContent = `سرور متصل است: ${data.message}`;
+            } catch (error) {
+                statusElement.textContent = 'خطا در اتصال به سرور';
+                console.error(error);
+            }
+        }
+
+        // ارسال داده‌های حسی به سرور
+        async function sendSensoryData() {
+            try {
+                statusElement.textContent = 'در حال ارسال داده‌ها...';
+                
+                // داده‌های شبیه‌سازی شده
+                const mockData = {
+                    visual_data: "data:image/base64,iVBORw0KGgoAAAANSUhEUgAA...",
+                    audio_data: "base64-audio-data-here",
+                    tactile_data: "vibration-pattern-data",
+                    biosensor_data: {
+                        eeg: [0.1, 0.2, 0.3, 0.4, 0.5],
+                        gsr: 1.23,
+                        heart_rate: 72
+                    }
+                };
+                
+                const response = await fetch(`${API_URL}/process-sensory-input`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(mockData)
+                });
+                
+                const data = await response.json();
+                statusElement.textContent = `داده‌ها با موفقیت ارسال شدند: ${data.message}`;
+                
+                visualDataElement.textContent = 'تصویر ارسال شد';
+                audioDataElement.textContent = 'صدا ارسال شد';
+                tactileDataElement.textContent = 'داده لمسی ارسال شد';
+                biosensorDataElement.textContent = JSON.stringify(mockData.biosensor_data);
+            } catch (error) {
+                statusElement.textContent = 'خطا در ارسال داده‌ها';
+                console.error(error);
+            }
+        }
+
+        // افزودن گوش دهنده رویداد به دکمه
+        sendButton.addEventListener('click', sendSensoryData);
+
+        // بررسی اتصال به سرور در هنگام بارگذاری صفحه
+        window.addEventListener('load', checkServer);
+    </script>
+</body>
+</html> 
